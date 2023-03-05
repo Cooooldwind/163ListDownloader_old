@@ -76,8 +76,9 @@ class playlist_get_allSong(object):
             info = song_info[count]
             artist_list = [i['name'] for i in info['ar']]
             song_url = f"https://music.163.com/song/media/outer/url?id={info['id']}.mp3"
-            os.mkdir('NC_Download')
-            path = "NC_Download"
+            try: os.mkdir('NC_Download')
+            except FileExistsError:pass
+            finally: path = "NC_Download"
             #下载
             try:
                 filename = f"{','.join(artist_list)} - {info['name']}.mp3"

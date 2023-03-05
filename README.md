@@ -4,7 +4,7 @@
 
 这个简易的爬虫程序能够帮你轻松下载歌单，只需要填入歌单id就行了。
 
-id就是“https://music.163.com/#/playlist?id=”后面的数字
+id就是"https://music.163.com/#/playlist?id="后面的数字
 
 一般人去右边的Releases里面挑最新版本下（挑最新版本下）下exe安装包就行了。
 

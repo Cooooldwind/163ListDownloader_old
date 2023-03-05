@@ -10,6 +10,8 @@ id就是 "https://music.163.com/#/playlist?id=" 后面的数字
 
 在中国的，建议下的时候开下Watt Tookit（Steam++），可以提速的。
 
+但是只能下最多320kbps音质的mp3文件。
+
 喜欢就戳个Star罢~
 
 ## English Version
@@ -19,5 +21,7 @@ This easy Crabber could download your netease playlist easily by inputing id(the
 CHOOSE THE NEWEST VERSION and download exe installer at the Releases on the right side of the page.
 
 If you're in China, you'd better to use Watt tookit(Steam++ before) to improve downloading speed.
+
+It can just download the .mp3 file at most 320kbps.
 
 If like it, Left a Star~

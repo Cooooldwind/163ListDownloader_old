@@ -1,10 +1,11 @@
 # params_encSecKey.py
 #视频参考：https://www.bilibili.com/video/BV1i54y1h75W?p=48
-import requests
 import random
 import json
-from Crypto.Cipher import AES
+import requests
 from base64 import b64encode
+from Crypto.Cipher import AES
+
 
 class Netease_params(object):
     def __init__(self, data):
@@ -75,4 +76,4 @@ if __name__ == '__main__':
         }
     wyy = Netease_params(data)
     wyy.run(url)
-    #Copyed from 半岛的孤城 https://www.bilibili.com/read/cv12754897
+    #Copied from 半岛的孤城 https://www.bilibili.com/read/cv12754897

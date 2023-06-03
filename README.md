@@ -58,4 +58,4 @@ The **maximum sound quality is 320kbps**, and after downloading, it will be **an
 
 **Just poke a Star if you like it~**
 
-**Finally, it is recommended that everyone support the genuine version. This software is for learning only and not for commercial use. If you purchase this application on shopping platforms such as Taobao/Pinduoduo, please be sure to delete it and report the merchant.**
+**Finally, it is recommended that everyone support the genuine version. This software is for learning only and not for commercial use. If you purchase this application on shopping platforms, please be sure to delete it and report the merchant.**

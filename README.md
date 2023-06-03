@@ -1,27 +1,31 @@
-# NeteaseCrabber - 免费下载歌单
+# NeteaseCrabber - 免费下载网易云歌单里的歌
 
 ## 简体中文版本
 
-这个简易的爬虫程序能够帮你轻松下载歌单，只需要填入歌单id就行了。
+### 简介
 
-id就是 "https://music.163.com/#/playlist?id=" 后面的数字
+这个简易的爬虫程序能够帮你轻松下载网易云里歌单的所有歌，包括歌词、专辑封面、属性编辑。
 
-一般人去右边的Releases里面挑最新版本下（挑最新版本下）下exe安装包就行了。
+### 使用方式
 
-在中国的，建议下的时候开下Watt Tookit（Steam++），可以提速的。
+你只需要填入歌单id，勾选后面的选项，点击确定即可下载。
 
-但是只能下最多320kbps音质的mp3文件。
+同时可以通过Log窗口，查看下载进度。
 
-喜欢就戳个Star罢~
+id就是 "https://music.163.com/#/playlist?id=" 后面的数字。
 
-## English Version
+### 安装方式
 
-This easy Crabber could download your netease playlist easily by inputing id(the number behind "https://music.163.com/#/playlist?id=" )
+一般人去右边的**Releases**里面挑最新版本下（挑最新版本下）下exe安装包就行了。
 
-CHOOSE THE NEWEST VERSION and download exe installer at the Releases on the right side of the page.
+在中国的，建议下的时候开下**[Watt Tookit](https://steampp.net/)**（Steam++），可以提速的。
 
-If you're in China, you'd better to use Watt tookit(Steam++ before) to improve downloading speed.
+### 备注
 
-It can just download the .mp3 file at most 320kbps.
+音质**最多320kbps**，下载后是**mp3文件**，**歌词是lrc文件**，拷贝进MP3/4时请**务必了解自己的设备是否支持歌词显示**。
 
-If like it, Left a Star~
+并**不是所有歌都能下**，比如VIP试听的就不行，付费的也不行。
+
+**喜欢就戳个Star罢~**
+
+**最后建议大家支持正版，本软件仅供学习，非商用，若在淘宝/拼多多等购物平台购买到本应用，请务必删除并举报商家。**

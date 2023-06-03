@@ -1,9 +1,10 @@
-﻿import time,requests,os,eyed3,multitasking
+﻿import time,requests,os,eyed3,multitasking,base64
 from tkinter import *
 from params_encSecKey import *
 from eyed3.id3.frames import ImageFrame
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, error
+from NC_Logo import img
 
 
 
@@ -199,8 +200,11 @@ def Download_Main(ID,isMusic,isLyric,isCover,isAttribute):
 
 
 if __name__ == "__main__":
-    root.title("NeteaseCrabber V1.2.0 BetaVer.23004 By Cooooldwind_")
-    root.iconbitmap("NC_Logo.ico")
+    root.title("NeteaseCrabber V1.2.0 By Cooooldwind_")
+    tmp = open("tmp.ico","wb+")
+    tmp.write(base64.b64decode(img))
+    tmp.close()
+    root.iconbitmap("tmp.ico")
     Playlist_ID = StringVar()
     id_Text = Label(root,bd=0,text="输入ID: ")
     id_Entry = Entry(root,textvariable = Playlist_ID)
@@ -221,18 +225,19 @@ if __name__ == "__main__":
     cover_Check.grid(row = 0,column = 6)
     start_Button.grid(row = 0,column = 7)
     info_screen.title(f"NeteaseCrabber Log")
-    info_screen.iconbitmap("NC_Logo.ico")
+    info_screen.iconbitmap("tmp.ico")
+    os.remove("tmp.ico")
     download_Info = Listbox(info_screen,bd=0,width=60,takefocus=False,height=8,yscrollcommand="")
     download_Info.grid(row = 1,column = 1)
     root.mainloop()
     info_screen.mainloop()
    
-# 更新日志 Ver.1.2.0.23004:
-# 1.新增：往mp3文件里添加封面
-# 2.修复bug (#1202300401)：
-#   文件夹名字（也就是歌单名）里的特殊字符没法被移除，导致存不上文件
- 
-# UpdateLog for 1.2.0.23004:
-# 1.Add cover into files
-# 2.Fixed a bug (#1202300401):
-#   The special characters in the folder can't be removed.
+# 更新日志 Ver.1.2.0:
+# 1. 新增：
+# (1) 更新图形化界面（用tkinter写的）；
+# (2) 下载后自动打开文件夹；
+# (3) Logo在GUI上的显示；
+# (4) 解除对下载私密歌单的限制（私密歌单的ID可以在网页版里登录自己账号获取）；
+# (1) 往mp3文件里添加封面；
+# 2. 部分函数重置；
+# 3. 修复bug (#1200000001)： 文件夹名字（也就是歌单名）里的特殊字符没法被移除，导致存不上文件。

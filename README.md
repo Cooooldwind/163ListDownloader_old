@@ -18,7 +18,7 @@ id就是 "https://music.163.com/#/playlist?id=" 后面的数字。
 
 一般人去右边的**Releases**里面挑最新版本下（挑最新版本下）下exe安装包就行了。
 
-在中国的，建议下的时候开下**[Watt Tookit](https://steampp.net/)**（Steam++），可以提速的。
+在中国的，建议下的时候**开下[Watt Tookit](https://steampp.net/)（Steam++）**，可以提速的。
 
 ### 备注
 

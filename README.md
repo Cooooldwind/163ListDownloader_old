@@ -1,4 +1,4 @@
-# NeteaseCrabber - 免费下载网易云歌单里的歌
+# 163ListDownloader - 免费下载网易云歌单里的歌 (原名NeteaseCrabber)
 
 ## 简体中文版本
 
@@ -16,7 +16,7 @@ id就是 "https://music.163.com/#/playlist?id=" 后面的数字。
 
 ### 安装方式
 
-一般人去右边的**Releases**里面挑最新版本下（挑最新版本下）下exe安装包就行了。
+一般人去右边的**发行版**里面挑最新版本下（挑最新版本下）下exe安装包就行了。
 
 在中国的，建议下的时候**开下[Watt Tookit](https://steampp.net/)（Steam++）**，可以提速的。
 
@@ -46,7 +46,7 @@ ID is“ https://music.163.com/#/playlist?id= The following numbers.
 
 ### Installation method
 
-Most people go to the **Releases** on the right and select the latest version (under the latest version) to install the exe package.
+Most people go to the **Release** on the right and select the latest version (under the latest version) to install the exe package.
 
 If you're in China, it is recommended **to open the [Watt Tookit](https://steampp.net/) (Steam++)** when downloading, which can increase the speed.
 

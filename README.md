@@ -50,7 +50,7 @@ Most people go to the **Release** on the right and select the latest version (un
 
 If you're in China, it is recommended **to open the [Watt Tookit](https://steampp.net/) (Steam++)** when downloading, which can increase the speed.
 
-###Remarks
+### Remarks
 
 The **maximum sound quality is 320kbps**, and after downloading, it will be **an MP3 file**. If there are lyrics, there will be an **lrc file**. When copying into MP3/4, please **be sure to know** if your device supports lyrics display.
 

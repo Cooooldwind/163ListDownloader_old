@@ -63,17 +63,6 @@ class Netease_params(object):
     }
         headers = {'User-Agent':self.set_user_agent()}
         response = requests.post(url, data=data, headers=headers).json()
-        #print(response)
         return response
 
-if __name__ == '__main__':
-    url = 'https://music.163.com/weapi/song/lyric?csrf_token='
-    data = {
-            'csrf_token': "",
-            'id': "1398764652", #此处为网易云歌曲id
-            'lv': '-1',
-            'tv': '-1'
-        }
-    wyy = Netease_params(data)
-    wyy.run(url)
-    #Copied from 半岛的孤城 https://www.bilibili.com/read/cv12754897
+#Copied from 半岛的孤城 https://www.bilibili.com/read/cv12754897

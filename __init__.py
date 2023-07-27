@@ -1,17 +1,14 @@
 '''
 163ListDownloader by CooooldWind_
-Version 1.3.0-23010a
+Version 1.3.0-23011a
 Sourcecode follows GPL-3.0 licence.
-Updates:
-重写内容
-更改主文件名称为__init__（手动加入到site-packages文件夹可以实现调用）
-下载的时候会在文件夹底下生成随机名称的文件夹防止串歌
-暂时阉割掉了多线程下载，后面再研究看看
-差不多这样子
+Updates: 
+1. 多线程（请在data_get的最后一个函数加上线程数）
+2. 图片的流式下载（提升稳定性）
 '''
 
 
-import random,time,os,eyed3,requests
+import random,time,os,eyed3,requests,threading
 from mutagen.id3 import ID3,APIC
 from PIL import Image
 from .params_encSecKey import *
@@ -19,13 +16,18 @@ from .params_encSecKey import *
 __name__ = "163ListDownloader_Sirius"
 __version__ = "1.3.0-23010a"
 
+ThreadCntMax = threading.Semaphore(4)
+
 class Playlist():
     def __init__(self, ID):
         self.ID = ID
         
     
     #获取数据
-    def data_get(self, Path, Args):
+    def data_get(self, Path, Args, ThreadSum):
+        #线程总数
+        global ThreadCntMax
+        ThreadCntMax = threading.Semaphore(ThreadSum)
         if Path[-1] != '/': Path += '/'
         #获取歌单简短信息
         PlaylistAPI = "https://music.163.com/weapi/v6/playlist/detail?"
@@ -80,25 +82,40 @@ class Playlist():
         return self.longList
         #此处返回包含字典的列表。
         
-        
+    
     #下载的主函数
     def download_main(self):
         for self.downloading in self.longList:
+            thread = Downloader(self.downloading)
+            thread.start()
+            time.sleep(0.2)
+        return None
+
+
+class Downloader(threading.Thread):
+    def __init__(self, dictss):
+        threading.Thread.__init__(self)
+        self.downloading = dictss
+        
+        
+    #下载音乐
+    def run(self):
+        with ThreadCntMax:
             #下载时的文件名
             self.downloading['filename'] = self.downloading['name'] + " - " + self.downloading['artists']
+            os.makedirs(self.downloading['path'] + self.downloading['path_add'])
             #逐个判断是否要操作
             ss = "Successful!"
-            print(self.downloading['path'] + self.downloading['path_add'])
-            os.makedirs(self.downloading['path'] + self.downloading['path_add'])
+            print(self.downloading['filename'] + " -> " + self.downloading['path'] + self.downloading['path_add'])
             if self.downloading['args'][1] == True: ss = self.music_get()
-            if self.downloading['args'][2] == True and ss == "Successful!": self.lyric_get()
-            if self.downloading['args'][3] == True and ss == "Successful!": self.cover_get()
-            if self.downloading['args'][4] == True and ss == "Successful!": self.info_write()
-            print(self.mixer())
+            if ss == "Successful!":
+                if self.downloading['args'][2] == True: self.lyric_get()
+                if self.downloading['args'][3] == True: self.cover_get()
+                if self.downloading['args'][4] == True: self.info_write()
+                print(self.mixer())
         return None
     
     
-    #下载音乐
     def music_get(self):
         DownloadURL = "https://music.163.com/song/media/outer/url?id=" + self.downloading['id'] + ".mp3"
         filename = self.downloading['filename'] + ".mp3"
@@ -110,8 +127,11 @@ class Playlist():
             except: pass
             else: break
         downloaded = int(0)
-        '''try: totalsize = int(fileget.headers['Content-Length'])
-        except: pass'''
+        '''[test_start]
+        try: totalsize = int(fileget.headers['Content-Length'])
+        except: pass
+        [test_end]'''
+        print(f"正在下载 {filename}")
         for data in fileget.iter_content(chunk_size = 1024):
             file.write(data)
             downloaded += len(data)
@@ -133,6 +153,7 @@ class Playlist():
     
     #下载歌词
     def lyric_get(self):
+        print(f"正在获取歌词 {self.downloading['filename']}")
         LyricAPI = 'https://music.163.com/weapi/song/lyric?csrf_token='
         while True:
             try: Lyric = Netease_params({'csrf_token':"", 'id':self.downloading['id'], 'lv':'-1', 'tv':'-1'}).run(LyricAPI)
@@ -150,9 +171,16 @@ class Playlist():
         filename = self.downloading['filename'] + ".jpg"
         file = open(self.downloading['path'] + self.downloading['path_add'] + filename,'wb+')
         while True:
-            try: file.write(requests.get(self.downloading['album_picture_url'],allow_redirects = True).content)
+            try: fileget = requests.get(self.downloading['album_picture_url'],allow_redirects = True,stream=True)
             except: pass
             else: break
+        downloaded = int(0)
+        print(f"正在下载 {filename}")
+        for data in fileget.iter_content(chunk_size = 1024):
+            file.write(data)
+            downloaded += len(data)
+            if random.randint(0,1000) % 200 == 0:
+                time.sleep(0.01)
         file.close()
         file = Image.open(self.downloading['path'] + self.downloading['path_add'] + filename)
         file = file.convert("RGB")
@@ -164,6 +192,7 @@ class Playlist():
     
     #属性填写
     def info_write(self):
+        print(f"正在填写属性 {self.downloading['filename']}")
         filename = self.downloading['filename'] + ".mp3"
         picname = self.downloading['filename'] + ".jpg"
         file = eyed3.load(self.downloading['path'] + self.downloading['path_add'] + filename)
@@ -182,6 +211,7 @@ class Playlist():
     
     #然后处理一下
     def mixer(self):
+        print(f"正在进行最后的处理 {self.downloading['filename']}")
         command_1 = "copy \"" + self.downloading['path'] + self.downloading['path_add'] + "*\" \"" + self.downloading['path'] + "\""
         command_1 = command_1.replace('/','\\')
         command_2 = self.downloading['path'] + self.downloading['path_add'] + "\""
@@ -195,4 +225,5 @@ class Playlist():
                 os.system(command_2)
             except: pass
             else:break
-        return "Successful!"
+        print(f"完成 {self.downloading['filename']}")
+        return "Successful!"    

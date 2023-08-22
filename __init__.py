@@ -1,15 +1,15 @@
 '''
 163ListDownloader by CooooldWind_
-Version 1.3.0-23016a
+Version 1.3.0-23017a
 Sourcecode follows GPL-3.0 licence.
 Updates: 
-1. 大重构，优化对开发者的体验
+1. 修复漏洞
 '''
 
 import random,time,os,eyed3,requests,threading,pprint,shutil
 from mutagen.id3 import ID3,APIC
 from PIL import Image
-from params_encSecKey import *
+from .params_encSecKey import *
 
 playlist_api = "https://music.163.com/weapi/v6/playlist/detail?"
 music_info_api = "https://music.163.com/weapi/v3/song/detail"
@@ -275,17 +275,17 @@ class music(threading.Thread):
 
 '''----------入门教学----------'''
 '''定义类 '''
-p = playlist("YOUR ID HERE")
+# p = playlist("YOUR ID HERE")
 '''定义完不会自动获取数据，请对它下读取命令''' 
-p.data_get()
+# p.data_get()
 '''
 下载启动前请存入下载信息，分别是
 ("存储路径",[歌单文件夹分类(T/F),下载歌曲(T/F),下载歌词(T/F),下载专辑封面(T/F),属性编辑(T/F)])
 (T/F)代表该部分填入True/False。
 '''
-p.download_info_add("D:/Test",[True,True,True,True,True])
+# p.download_info_add("D:/Test",[True,True,True,True,True])
 '''下载开始时请传入线程数量'''
-p.download_main(4)
+# p.download_main(4)
 '''
 其他信息
 p.longlist - 歌曲全部信息
@@ -304,8 +304,10 @@ download_status - 下载详情，以[{'state':数字,'value':数值或报错,'na
 进度: 90.0% (9/0/10)
 成功: 10; 失败: 0
 '''
+'''
 while p.now_size != p.total_size:
     now = round(p.now_size / p.total_size * 100, 3)
     print("进度: " + str(now) + "% (" + str(p.success_size) + "/" + str(p.failure_size) + "/" + str(p.total_size) + ")")
     time.sleep(1)
 print("成功: " + str(p.success_size) + "; 失败: " + str(p.failure_size))
+'''

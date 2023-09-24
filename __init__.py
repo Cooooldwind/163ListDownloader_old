@@ -1,9 +1,10 @@
 '''
 163ListDownloader by CooooldWind_
-Version 1.3.0-23017a
+Version 1.3.0-23019a
 Sourcecode follows GPL-3.0 licence.
 Updates: 
-1. 修复漏洞
+1. 修复部分漏洞
+2. 下载歌曲需要添加文件名信息，详见底下教程
 '''
 
 import random,time,os,eyed3,requests,threading,pprint,shutil
@@ -15,6 +16,14 @@ playlist_api = "https://music.163.com/weapi/v6/playlist/detail?"
 music_info_api = "https://music.163.com/weapi/v3/song/detail"
 lyric_api = "https://music.163.com/weapi/song/lyric?csrf_token="
 
+
+def clean(s):
+    dirty = ["/","\\",":","*","\"","?","|","<",">"]
+    for i in dirty:
+        s = s.replace(i,"")
+    return s
+    
+    
 class playlist():
     def __init__(self, id):
         self.id = id
@@ -22,23 +31,29 @@ class playlist():
         self.shortlist = "[Error] Didn't run data_get function."
         self.creater = "[Error] Didn't run data_get function."
         self.playlist_name = "[Error] Didn't run data_get function."
+    
+    
     def data_get(self):
         '全局一下API'
         global playlist_api
         global music_info_api
+        
         '爬歌曲ID'
         try: get_list = Netease_params(
                 {'csrf_token': "", 'id': str(self.id), 'n': "0"}
             ).run(playlist_api)['playlist']
         except KeyError: pass
         else: pass
+        
         '存创建者ID待会儿仿ta本人获取详细信息，顺便测下爬没爬成'
         try: self.creater = str(get_list['userId'])
         except: 
             raise Exception("Playlist-Get Error: Server refused the request, this playlist may not be accessible.")
         self.playlist_name = get_list['name']
+        
         '存下所有歌ID'
         self.shortlist = [{'id':i['id']} for i in get_list['trackIds']]
+        
         '爬歌曲详细信息'
         try: get_music = Netease_params(
                 {'c': str(self.shortlist), 'csrf_token': '', 'userId': self.creater}
@@ -46,8 +61,10 @@ class playlist():
         except TimeoutError: 
             raise Exception("Playlist-Get Error: Connect time is too long to wait.")
         else: pass
+        
         'longlist就是包含各种信息的大表'
         self.longlist = []
+        
         '开始填写信息'
         now = 0
         for i in range(len(get_music)):
@@ -62,26 +79,29 @@ class playlist():
             artists = artists[0: len(artists) - 1]
             '专辑'
             album = get_music[i]['al']['name']
+            
             '歌名、艺人、专辑检测违规字符并去除'
-            dirty = ["/","\\",":","*","\"","?","|","<",">"]
-            for j in dirty:
-                name = name.replace(j,"")
-                artists = artists.replace(j,"")
-                album = album.replace(j,"")
-                self.playlist_name = self.playlist_name.replace(j,"")
+            name = clean(name)
+            artists = clean(artists)
+            album = clean(album)
+            self.playlist_name = clean(self.playlist_name)
+            
             '歌曲、歌词、专辑封面文件名'
             music_filename = name + " - " + artists + ".mp3"
             lyric_filename = name + " - " + artists + ".lrc"
             cover_filename = name + " - " + artists + ".jpg"
+            
             '封面和音乐的链接'
             cover_link = get_music[i]['al']['picUrl']
             music_link = "https://music.163.com/song/media/outer/url?id=" + str(get_music[i]['id']) + ".mp3"
+            
             'uid获取，为25位包含26个大写字母和数字的字符串，每五个用横杠隔开'
             uid = ""
-            for i in range(5):
+            for j in range(5):
                 uid += "".join(random.sample('1234567890QWERTYUIOPASDFGHJKLZXCVBNM',5))
                 uid += "-"
             uid = uid[0: len(uid) - 1]
+            
             '最后把以上信息汇总到一起'
             appending = {
                 'name': name,
@@ -94,23 +114,45 @@ class playlist():
                 'music_link': music_link,
                 'uid': uid,
                 'id': now,
+                'id_show': now + 1,
                 'music_id': get_music[i]['id']
             }
             self.longlist.append(appending)
             now += 1
-    def download_info_add(self, path, args):
+        
+            
+    def download_info_add(self, path, args, filename):
         '针对每首歌都添加参数和地址'
-        for i in range(len(self.longlist)):
+        for now in self.longlist:
+            
             '补充斜杠'
             if path[len(path) - 1] != "/": path += "/"
-            self.longlist[i]['path'] = path
+            now['path'] = path
+            
             '参数第一项是是否分类文件夹，为true自动添加一个uid子文件夹'
             if args[0]:
-                self.longlist[i]['path'] += self.playlist_name + "/"
+                now['path'] += self.playlist_name + "/"
+                
             '参数第2-5项'
-            self.longlist[i]['path'] += self.longlist[i]['uid'] + "/"
-            self.longlist[i]['path'] = self.longlist[i]['path'].replace("/","\\")
-            self.longlist[i]['args'] = args[1: len(args)]
+            now['path'] += now['uid'] + "/"
+            now['path'] = now['path'].replace("/","\\")
+            now['args'] = args[1: len(args)]
+            
+            '文件重命名'
+            music_id = now['music_id']
+            filename_copy = str(filename)
+            filename_copy = filename_copy.replace("$title$",now['name'])
+            filename_copy = filename_copy.replace("$artists$",now['artists'])
+            filename_copy = filename_copy.replace("$album$",now['album'])
+            filename_copy = filename_copy.replace("$music_id$",str(now['music_id']))
+            filename_copy = filename_copy.replace("$list_id$",str(now['id_show']))
+            filename_copy = clean(filename_copy)
+            now['music_filename'] = filename_copy + ".mp3"
+            now['lyric_filename'] = filename_copy + ".lrc"
+            now['cover_filename'] = filename_copy + ".jpg"
+            print(filename_copy)
+            
+            
     def download_main(self, thread_sum):
         self.download_status = []
         for i in self.longlist:
@@ -280,10 +322,21 @@ class music(threading.Thread):
 # p.data_get()
 '''
 下载启动前请存入下载信息，分别是
-("存储路径",[歌单文件夹分类(T/F),下载歌曲(T/F),下载歌词(T/F),下载专辑封面(T/F),属性编辑(T/F)])
+("存储路径",[歌单文件夹分类(T/F),下载歌曲(T/F),下载歌词(T/F),下载专辑封面(T/F),属性编辑(T/F)],文件名)
 (T/F)代表该部分填入True/False。
+文件名这么填：
+打一个双引号，里面是字，注意：
+$title$是歌曲名
+$artists$是歌手
+$album$是专辑
+$music_id$是歌曲的网易云ID
+$list_id$是歌曲在歌单中的序号
+例：
+"[$music_id$]$artists$ - $title$ - MyFavorite"
+下载下来的歌，名字会成为
+"[543987451]Vicetone,Cozi Zuehlsdorff - Way Back - MyFavorit.mp3"
 '''
-# p.download_info_add("D:/Test",[True,True,True,True,True])
+# p.download_info_add("C:/Users/Administrator/Desktop/Test",[True,True,True,True,True],"[$music_id$]$artists$ - $title$ - MyFavorite")
 '''下载开始时请传入线程数量'''
 # p.download_main(4)
 '''

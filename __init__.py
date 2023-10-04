@@ -1,13 +1,13 @@
 '''
 163ListDownloader by CooooldWind_
-Version 1.3.0-23019a
+Version 1.3.0-23020a
 Sourcecode follows GPL-3.0 licence.
 Updates: 
-1. 修复部分漏洞
-2. 下载歌曲需要添加文件名信息，详见底下教程
+1. 修复漏洞：选择“属性编辑”而不选择“下载歌曲”时的反馈
+2. 删除对pprint的冗余库需求
 '''
 
-import random,time,os,eyed3,requests,threading,pprint,shutil
+import random,time,os,eyed3,requests,threading,shutil
 from mutagen.id3 import ID3,APIC
 from PIL import Image
 from .params_encSecKey import *
@@ -275,7 +275,7 @@ class music(threading.Thread):
                 self.father.download_status[self.id]['value'] = 1
                 time.sleep(0.5)
             '属性填写'
-            if self.attribute_write: 
+            if self.attribute_write and self.music_download: 
                 '利用eyed3完成第一步骤'
                 self.father.download_status[self.id]['state'] = 4
                 self.father.download_status[self.id]['value'] = 0
@@ -300,14 +300,16 @@ class music(threading.Thread):
             self.father.download_status[self.id]['state'] = 5
             self.father.download_status[self.id]['value'] = "Finishing"
             self.copy_to_path = self.info['path'][0: len(self.info['path']) - 31]
-            try: shutil.move(self.info['path'] + self.info['music_filename'], self.copy_to_path)
-            except: 
-                os.remove(self.copy_to_path + "\\" + self.info['music_filename'])
-                shutil.move(self.info['path'] + self.info['music_filename'], self.copy_to_path)
-            try: shutil.move(self.info['path'] + self.info['lyric_filename'], self.copy_to_path)
-            except: 
-                os.remove(self.copy_to_path + "\\" + self.info['lyric_filename'])
-                shutil.move(self.info['path'] + self.info['lyric_filename'], self.copy_to_path)
+            if self.music_download:
+                try: shutil.move(self.info['path'] + self.info['music_filename'], self.copy_to_path)
+                except: 
+                    os.remove(self.copy_to_path + "\\" + self.info['music_filename'])
+                    shutil.move(self.info['path'] + self.info['music_filename'], self.copy_to_path)
+            if self.lyric_download:
+                try: shutil.move(self.info['path'] + self.info['lyric_filename'], self.copy_to_path)
+                except: 
+                    os.remove(self.copy_to_path + "\\" + self.info['lyric_filename'])
+                    shutil.move(self.info['path'] + self.info['lyric_filename'], self.copy_to_path)
             shutil.rmtree(self.info['path'])
             self.father.download_status[self.id]['state'] = 6
             self.father.download_status[self.id]['value'] = "Successful"

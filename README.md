@@ -1,3 +1,5 @@
+由于近期将重构提上日程，本仓库不再更新，望周知。 Because of we're planning to rebuild this project, we stopped updating at this repository. Hope well known.
+
 # 163ListDownloader - 免费下载网易云歌单里的歌 (原名NeteaseCrabber)
 
 ## 简体中文版本
